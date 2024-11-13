@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 40 40">
+    <!-- Wooden Handle -->
+    <path d="M12 28L24 16"
+          stroke="#8B4513"
+          stroke-width="4"
+          stroke-linecap="round"/>
+
+    <!-- Hammer Head -->
+    <rect x="24" y="8"
+          width="12" height="8"
+          rx="1"
+          transform="rotate(45 24 8)"
+          fill="#A9A9A9"/>
+
+    <!-- Highlight on hammer head -->
+    <path d="M23 9L29 15"
+          stroke="#D3D3D3"
+          stroke-width="1.5"
+          stroke-linecap="round"/>
+
+    <!-- Bottom handle grip detail -->
+    <path d="M13 27L15 25"
+          stroke="#6B3211"
+          stroke-width="2"
+          stroke-linecap="round"/>
+</svg>
