@@ -2,24 +2,25 @@ package com.coperius.fullJarDecompile;
 
 import com.intellij.notification.NotificationGroupManager;
 import com.intellij.notification.NotificationType;
+import com.intellij.openapi.project.Project;
 
 public class NotificationUtil {
-    private static void showNotification(String title, String content, NotificationType type) {
+    private static void showNotification(Project project, String title, String content, NotificationType type) {
         NotificationGroupManager.getInstance()
                 .getNotificationGroup("FullJarDecompile Notifications")  // Define a unique group ID
                 .createNotification(title, content, type)
-                .notify(null);
+                .notify(project);
     }
 
-    public static void Warn(String title, String content) {
-        showNotification(title, content, NotificationType.WARNING);
+    public static void Warn(Project project, String title, String content) {
+        showNotification(project, title, content, NotificationType.WARNING);
     }
 
-    public static void Info(String title, String content) {
-        showNotification(title, content, NotificationType.INFORMATION);
+    public static void Info(Project project, String title, String content) {
+        showNotification(project, title, content, NotificationType.INFORMATION);
     }
 
-    public static void Error(String title, String content) {
-        showNotification(title, content, NotificationType.ERROR);
+    public static void Error(Project project, String title, String content) {
+        showNotification(project, title, content, NotificationType.ERROR);
     }
 }

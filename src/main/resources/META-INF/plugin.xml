@@ -25,11 +25,12 @@
 
 
     <depends>com.intellij.modules.platform</depends>
+    <depends>org.jetbrains.java.decompiler</depends>
 
     <extensions defaultExtensionNs="com.intellij">
         <notificationGroup
                 id="FullJarDecompile Notifications"
-                displayType="TOOL_WINDOW"
+                displayType="BALLOON"
                 isLogByDefault="true"/>
     </extensions>
 
