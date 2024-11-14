@@ -1,36 +1,22 @@
-<!-- Plugin Configuration File. Read more: https://plugins.jetbrains.com/docs/intellij/plugin-configuration-file.html -->
 <idea-plugin>
-    <!-- Unique identifier of the plugin. It should be FQN. It cannot be changed between the plugin versions. -->
-    <id>com.coperius.fullJarDecompile</id>
-
+    <id>com.coperius.fullJarDecompiler</id>
     <category>Other Tools</category>
-
-    <!-- Public plugin name should be written in Title Case.
-         Guidelines: https://plugins.jetbrains.com/docs/marketplace/plugin-overview-page.html#plugin-name -->
     <name>FullJarDecompiler</name>
-
-    <!-- A displayed Vendor name or Organization ID displayed on the Plugins Page. -->
-    <vendor>Coperius</vendor>
-
+    <vendor url="https://github.com/coperius">Coperius</vendor>
     <version>0.2</version>
-
-    <!-- Description of the plugin displayed on the Plugin Page and IDE Plugin Manager.
-         Simple HTML elements (text formatting, paragraphs, and lists) can be added inside of <![CDATA[ ]]> tag.
-         Guidelines: https://plugins.jetbrains.com/docs/marketplace/plugin-overview-page.html#plugin-description -->
     <description><![CDATA[
-        <p>FullDecompile is a plugin that allows you to decompile all classes in a jar file at once.</p>
+        <p>FullJarDecompiler is a plugin that allows you to decompile all classes in a jar file at once.</p>
         <p/>
         <p>It uses the built-in IDEA decompiler to decompile all classes in a jar file.</p>
         <p>It is useful when you want to get the source code for analysis or debugging.</p>
   ]]></description>
-
 
     <depends>com.intellij.modules.platform</depends>
     <depends>org.jetbrains.java.decompiler</depends>
 
     <extensions defaultExtensionNs="com.intellij">
         <notificationGroup
-                id="FullJarDecompile Notifications"
+                id="FullJarDecompiler Notifications"
                 displayType="BALLOON"
                 isLogByDefault="true"/>
     </extensions>
@@ -39,9 +25,10 @@
         <group id="DecompileAllClassesGroup">
             <separator/>
             <action id="DecompileAllClasses" text="Decompile Jar File"
-                    class="com.coperius.fullJarDecompile.DecompileAllClassesAction">
+                    class="com.coperius.fullJarDecompiler.DecompileAllClassesAction">
             </action>
             <add-to-group group-id="ProjectViewPopupMenu" anchor="last"/>
         </group>
     </actions>
+
 </idea-plugin>

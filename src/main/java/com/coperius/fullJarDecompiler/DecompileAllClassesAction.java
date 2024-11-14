@@ -1,4 +1,4 @@
-package com.coperius.fullJarDecompile;
+package com.coperius.fullJarDecompiler;
 
 import com.intellij.openapi.actionSystem.*;
 import com.intellij.openapi.diagnostic.Logger;

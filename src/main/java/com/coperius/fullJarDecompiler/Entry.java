@@ -1,4 +1,4 @@
-package com.coperius.fullJarDecompile;
+package com.coperius.fullJarDecompiler;
 
 class Entry {
     private final String path;

@@ -1,4 +1,4 @@
-package com.coperius.fullJarDecompile;
+package com.coperius.fullJarDecompiler;
 
 import com.intellij.notification.NotificationGroupManager;
 import com.intellij.notification.NotificationType;
@@ -7,7 +7,7 @@ import com.intellij.openapi.project.Project;
 public class NotificationUtil {
     private static void showNotification(Project project, String title, String content, NotificationType type) {
         NotificationGroupManager.getInstance()
-                .getNotificationGroup("FullJarDecompile Notifications")  // Define a unique group ID
+                .getNotificationGroup("FullJarDecompiler Notifications")  // Define a unique group ID
                 .createNotification(title, content, type)
                 .notify(project);
     }
