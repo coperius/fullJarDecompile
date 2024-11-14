@@ -19,7 +19,8 @@
          Guidelines: https://plugins.jetbrains.com/docs/marketplace/plugin-overview-page.html#plugin-description -->
     <description><![CDATA[
         <p>FullDecompile is a plugin that allows you to decompile all classes in a jar file at once.</p>
-        <p>It uses the FernFlower decompiler to decompile the classes.</p>
+        <p/>
+        <p>It uses the built-in IDEA decompiler to decompile all classes in a jar file.</p>
         <p>It is useful when you want to get the source code for analysis or debugging.</p>
   ]]></description>
 
