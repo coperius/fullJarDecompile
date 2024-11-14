@@ -1,8 +1,8 @@
-# FullJavaDecompile
+# FullJarDecompiler
 
 ## Overview
 
-FullJavaDecompile is a plugin for IntelliJ IDEA that decompiles all Java classes of a jar file to Java source zip.
+FullJarDecompiler is a plugin for IntelliJ IDEA that decompiles all Java classes of a jar file to Java source zip.
 
 ## Features
 
@@ -13,7 +13,7 @@ FullJavaDecompile is a plugin for IntelliJ IDEA that decompiles all Java classes
 
 1. Clone the repository:
     ```sh
-    git clone https://github.com/coperius/fullJarDecompile.git
+    git clone https://github.com/coperius/fullJarDecompiler.git
     ```
 2. Open the project in IntelliJ IDEA.
 3. Build the project using Gradle:
@@ -24,7 +24,7 @@ FullJavaDecompile is a plugin for IntelliJ IDEA that decompiles all Java classes
 ## Usage
 
 1. Open a Java project in IntelliJ IDEA.
-2. Install the plugin by going to `File` -> `Settings` -> `Plugins` -> `Install Plugin from Disk...` and selecting the `build/libs/fullJavaDecompile-0.1-SNAPSHOT.jar` file.
+2. Install the plugin by going to `File` -> `Settings` -> `Plugins` -> `Install Plugin from Disk...` and selecting the `build/libs/fullJarDecompiler.jar` file.
 3. Select a jar file in the project view and right-click on it.
 4. Click on the "Decompile Jar File" option in the context menu.
 5. You must accept the license agreement to use the built-in Java decompiler for the first time.

@@ -47,8 +47,8 @@ jobs:
     - name: Upload
       uses: actions/upload-artifact@v4
       with:
-        name: fullJarDecompile.jar
-        path: build/libs/fullJarDecompile*.jar
+        name: fullJarDecompiler.jar
+        path: build/libs/fullJarDecompiler*.jar
 
   dependency-submission:
 

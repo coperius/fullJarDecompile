@@ -1,7 +1,7 @@
 <!-- Plugin Configuration File. Read more: https://plugins.jetbrains.com/docs/intellij/plugin-configuration-file.html -->
 <idea-plugin>
     <!-- Unique identifier of the plugin. It should be FQN. It cannot be changed between the plugin versions. -->
-    <id>com.coperius.fullJarDecompile</id>
+    <id>com.coperius.fullJarDecompiler</id>
 
     <category>Other Tools</category>
 
@@ -18,7 +18,7 @@
          Simple HTML elements (text formatting, paragraphs, and lists) can be added inside of <![CDATA[ ]]> tag.
          Guidelines: https://plugins.jetbrains.com/docs/marketplace/plugin-overview-page.html#plugin-description -->
     <description><![CDATA[
-        <p>FullDecompile is a plugin that allows you to decompile all classes in a jar file at once.</p>
+        <p>FullJarDecompiler is a plugin that allows you to decompile all classes in a jar file at once.</p>
         <p/>
         <p>It uses the built-in IDEA decompiler to decompile all classes in a jar file.</p>
         <p>It is useful when you want to get the source code for analysis or debugging.</p>
@@ -30,7 +30,7 @@
 
     <extensions defaultExtensionNs="com.intellij">
         <notificationGroup
-                id="FullJarDecompile Notifications"
+                id="FullJarDecompiler Notifications"
                 displayType="BALLOON"
                 isLogByDefault="true"/>
     </extensions>
@@ -39,7 +39,7 @@
         <group id="DecompileAllClassesGroup">
             <separator/>
             <action id="DecompileAllClasses" text="Decompile Jar File"
-                    class="com.coperius.fullJarDecompile.DecompileAllClassesAction">
+                    class="com.coperius.fullJarDecompiler.DecompileAllClassesAction">
             </action>
             <add-to-group group-id="ProjectViewPopupMenu" anchor="last"/>
         </group>
