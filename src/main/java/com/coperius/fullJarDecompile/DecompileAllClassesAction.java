@@ -1,6 +1,5 @@
 package com.coperius.fullJarDecompile;
 
-import com.intellij.ide.util.PropertiesComponent;
 import com.intellij.openapi.actionSystem.*;
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.fileChooser.FileChooser;
@@ -10,6 +9,7 @@ import com.intellij.openapi.fileEditor.impl.LoadTextUtil;
 import com.intellij.openapi.progress.ProgressIndicator;
 import com.intellij.openapi.progress.ProgressManager;
 import com.intellij.openapi.progress.Task;
+import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vfs.*;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -22,7 +22,6 @@ import java.util.zip.ZipOutputStream;
 public class DecompileAllClassesAction extends AnAction {
 
     private static final Logger LOG = Logger.getInstance(DecompileAllClassesAction.class);
-    private static final String LEGAL_NOTICE_KEY = "decompiler.legal.notice.accepted";
 
     @Override
     public @NotNull ActionUpdateThread getActionUpdateThread() {
@@ -33,17 +32,33 @@ public class DecompileAllClassesAction extends AnAction {
     public void actionPerformed(@NotNull AnActionEvent e) {
 
         final VirtualFile vf = e.getData(CommonDataKeys.VIRTUAL_FILE);
+
         if (vf == null) {
-            NotificationUtil.Warn("Decompilation Cancelled", "No file found in event");
+            NotificationUtil.Warn(e.getProject(),"Decompilation Cancelled", "No file found in event");
             LOG.warn("DecompileAllClassesAction: No file selected");
             return;
         }
 
-        var jarFile = getJarFile(vf);
+        var jarFile = getJarFileFor(vf);
 
         if (jarFile == null) {
-            NotificationUtil.Warn("Decompilation Cancelled", "Not a jar file " + vf.getPath());
+            NotificationUtil.Warn(e.getProject(),"Decompilation Cancelled", "Not a jar file " + vf.getPath());
             LOG.warn("DecompileAllClassesAction: Not a jar file " + vf.getPath());
+            return;
+        }
+
+        // Try to show legal notice
+        try {
+            LegalNotice.ShowOriginalNotice(e.getProject());
+        } catch (Exception ex) {
+            NotificationUtil.Error(e.getProject(),"Decompilation Cancelled", "Error showing legal notice: " + ex.getMessage());
+            LOG.warn("Decompilation Cancelled: Error showing legal notice: " + ex.getMessage());
+            return;
+        }
+
+        if (!LegalNotice.isAccepted()) {
+            NotificationUtil.Warn(e.getProject(),"Decompilation Cancelled", "Legal notice not accepted");
+            LOG.warn("Decompilation Cancelled: Legal notice not accepted");
             return;
         }
 
@@ -56,7 +71,7 @@ public class DecompileAllClassesAction extends AnAction {
 
         if (selectedDir == null) {
             LOG.warn("No directory selected");
-            NotificationUtil.Warn("Decompilation Cancelled", "No directory selected");
+            NotificationUtil.Warn(e.getProject(),"Decompilation Cancelled", "No directory selected");
             return;
         }
 
@@ -64,14 +79,14 @@ public class DecompileAllClassesAction extends AnAction {
             @Override
             public void run(@NotNull ProgressIndicator indicator) {
                 // Code to run on a background thread with a progress indicator
-                decompileWork(jarFile, selectedDir);
-                LOG.info("Done");
+                decompileWork(e.getProject(),jarFile, selectedDir);
+                LOG.debug("Done");
             }
         });
 
     }
 
-    private @Nullable VirtualFile getJarFile(VirtualFile vf) {
+    private @Nullable VirtualFile getJarFileFor(VirtualFile vf) {
         if (vf == null) {
             return null;
         }
@@ -106,7 +121,8 @@ public class DecompileAllClassesAction extends AnAction {
 
         VirtualFile vf = e.getData(CommonDataKeys.VIRTUAL_FILE);
 
-        if (getJarFile(vf) == null) {
+        // hide action if not a jar file root
+        if (getJarFileFor(vf) == null) {
             presentation.setVisible(false);
             return;
         }
@@ -115,20 +131,16 @@ public class DecompileAllClassesAction extends AnAction {
 
     }
 
-    private void decompileWork(@NotNull VirtualFile root, @NotNull VirtualFile outputDir) {
-        // Need to use Idea decompilation engine
-        if (!PropertiesComponent.getInstance().isValueSet(LEGAL_NOTICE_KEY)) {
-            PropertiesComponent.getInstance().setValue(LEGAL_NOTICE_KEY, true);
-        }
+    private void decompileWork(Project project, @NotNull VirtualFile root, @NotNull VirtualFile outputDir) {
 
-        LOG.info("Decompile jar file: " + root.getPath());
+        LOG.debug("Decompile jar file: " + root.getPath());
 
         // Create zip file and add all decompiled files with directory structure
         // and save to disk
 
-        var entry = decompile(root);
+        var entry = decompile(project, root);
         if (entry == null || entry.getChildren().isEmpty()) {
-            NotificationUtil.Warn("No classes found", "No classes found in jar " + root.getPath());
+            NotificationUtil.Warn(project,"No classes found", "No classes found in jar " + root.getPath());
             LOG.warn("No classes found in jar " + root.getPath());
             return;
         }
@@ -141,8 +153,8 @@ public class DecompileAllClassesAction extends AnAction {
         try {
             zip = new ZipOutputStream(new java.io.FileOutputStream(outputPath));
         } catch (FileNotFoundException ex) {
-            NotificationUtil.Error("Zip creation", "Error creating zip file: " + ex.getMessage());
-            LOG.error("Zip creation error: " + ex.getMessage());
+            NotificationUtil.Error(project,"Zip creation", "Error creating zip file: " + ex.getMessage());
+            LOG.warn("Zip creation error: " + ex.getMessage());
             return;
         }
 
@@ -151,10 +163,10 @@ public class DecompileAllClassesAction extends AnAction {
                 writeEntry(child, zip);
             }
             zip.close();
-            NotificationUtil.Info("Decompilation Done", "Decompilation done, saved to " + outputPath);
+            NotificationUtil.Info(project,"Decompilation Done", "Decompilation done, saved to " + outputPath);
         } catch (IOException ex) {
-            NotificationUtil.Error("Zip creation", "Error: " + ex.getMessage());
-            LOG.error("Zip creation error: " + ex.getMessage());
+            NotificationUtil.Error(project,"Zip creation", "Error: " + ex.getMessage());
+            LOG.warn("Zip creation error: " + ex.getMessage());
         }
     }
 
@@ -181,19 +193,19 @@ public class DecompileAllClassesAction extends AnAction {
         }
     }
 
-    private @Nullable Entry decompile(@NotNull VirtualFile vf) {
+    private @Nullable Entry decompile(Project project, @NotNull VirtualFile vf) {
 
         // get path after .jar!/
         var path = vf.getPath().substring(vf.getPath().indexOf("!/") + 2);
 
         if (vf.isDirectory()) {
             var entry = new Entry(path, true);
-            LOG.info("Decompile dir: " + path);
+            LOG.debug("Decompile dir: " + path);
 
             // Ignore "'VirtualFile.getChildren()' called from a recursive method" inspection
             // In jar files, the directory structure is flat, so we can ignore it
             for (VirtualFile child : vf.getChildren()) {
-                var childEntry = decompile(child);
+                var childEntry = decompile(project, child);
                 if (childEntry != null) {
                     entry.addChild(childEntry);
                 }
@@ -210,7 +222,7 @@ public class DecompileAllClassesAction extends AnAction {
                 return null;
             }
 
-            LOG.info("Decompile file: " + path);
+            LOG.debug("Decompile file: " + path);
             try {
                 // replace .class with .java
                 var entryPath = path.substring(0, path.length() - 6) + ".java";
@@ -220,7 +232,7 @@ public class DecompileAllClassesAction extends AnAction {
                 return entry;
             } catch (Exception ex) {
                 LOG.warn("Decompilation Error: " + ex.getMessage());
-                NotificationUtil.Warn("Decompilation Error", "Error decompiling file " + path + ": "
+                NotificationUtil.Warn(project,"Decompilation Error", "Error decompiling file " + path + ": "
                         + ex.getMessage());
                 return null;
             }
